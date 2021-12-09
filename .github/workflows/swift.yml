@@ -1,0 +1,22 @@
+name: Swift
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: List available Xcode versions
+      run: ls /Applications | grep Xcode
+    - name: Build
+      run: |
+       cd App && xcodebuild clean build -workspace "modularization.xcworkspace" -scheme "katalog1" -destination "platform=iOS Simulator,name=iPhone 12 Pro,OS=latest" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO    
+    - name: Run unit tests
+      run: cd App && xcodebuild test -workspace "modularization.xcworkspace" -scheme "katalog1" -destination "platform=iOS Simulator,name=iPhone 12 Pro,OS=latest" | xcpretty && exit ${PIPESTATUS[0]}
